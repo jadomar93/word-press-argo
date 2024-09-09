@@ -58,7 +58,7 @@ ingress:
   hosts:
     - host: wordpress-demo.jadomars.com
       paths:
-        - path: /
+       - path: /
           pathType: ImplementationSpecific
   tls: 
    - secretName: wordpress-demo-tls
