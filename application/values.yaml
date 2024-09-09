@@ -4,15 +4,13 @@
 
 replicaCount: 3
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
+
 
 
 image:
   repository: wordpress
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
