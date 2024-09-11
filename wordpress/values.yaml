@@ -90,9 +90,9 @@ mariadb:
 
 env:
   WORDPRESS_DB_NAME: "wordpress"
-  WORDPRESS_DB_USER: "wordpress"
-  WORDPRESS_DB_PASSWORD: "wordpresspassword"
-  WORDPRESS_DB_HOST: "wordpress-mariadb.wordpress.svc.cluster.local:3306"
+  WORDPRESS_DB_USER: "example username"
+  WORDPRESS_DB_PASSWORD: "example spassword"
+  WORDPRESS_DB_HOST: "mysql"
 
 affinity: {}
 
