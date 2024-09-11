@@ -100,3 +100,18 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+mysql:
+  enabled: true
+  image:
+    repository: mysql
+    tag: "8.0"
+    pullPolicy: IfNotPresent
+  auth:
+    rootPassword: root_password_here
+    username: wordpress_user
+    password: wordpress_password
+    database: wordpress_db
+  primary:
+    service:
+      port: 3306
