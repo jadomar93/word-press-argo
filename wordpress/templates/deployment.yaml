@@ -40,7 +40,6 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-
           env:
             - name: WORDPRESS_DB_NAME
               value: "wordpress"
@@ -49,7 +48,7 @@ spec:
             - name: WORDPRESS_DB_PASSWORD
               value: "wordpresspassword"
             - name: WORDPRESS_DB_HOST
-              value:"wordpress-mariadb.wordpress.svc.cluster.local:3306"
+              value: "wordpress-mariadb.wordpress.svc.cluster.local:3306"
 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
