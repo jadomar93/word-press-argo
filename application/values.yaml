@@ -1,38 +1,33 @@
-# Default values for application.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# Default values for the WordPress Helm chart
 
 replicaCount: 1
 
-
-
-
+# WordPress Image Settings
 image:
   repository: wordpress
+  tag: latest
   pullPolicy: IfNotPresent
-  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# ServiceAccount settings
 serviceAccount:
-  # Specifies whether a service account should be created
   create: true
-  # Automatically mount a ServiceAccount's API credentials?
   automount: true
-  # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+# Pod annotations and labels
 podAnnotations: {}
 podLabels: {}
 
+# Pod security context
 podSecurityContext: {}
   # fsGroup: 2000
 
+# Container security context
 securityContext: {}
   # capabilities:
   #   drop:
@@ -41,14 +36,16 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+# Service Settings
 service:
   type: ClusterIP
   port: 80
 
+# Ingress Settings
 ingress:
   enabled: true
   className: "nginx"
-  annotations: 
+  annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     ingress.kubernetes.io/ssl-redirect: "false"
     cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -58,49 +55,12 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-  tls: 
-   - secretName: wordpress-demo-tls
-     hosts:
-       - wordpress-demo.jadomars.com
+  tls:
+    - secretName: wordpress-demo-tls
+      hosts:
+        - wordpress-demo.jadomars.com
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-# Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
-
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
+# WordPress Database settings (MySQL integration)
 mysql:
   enabled: true
   image:
@@ -108,10 +68,41 @@ mysql:
     tag: "8.0"
     pullPolicy: IfNotPresent
   auth:
-    rootPassword: root_password_here
-    username: wordpress_user
-    password: wordpress_password
-    database: wordpress_db
+    rootPassword: root_password  # Set MySQL root password
+    username: wordpress_user      # Set MySQL user for WordPress
+    password: wordpress_password  # Set MySQL user password for WordPress
+    database: wordpress_db        # Set the database name for WordPress
   primary:
     service:
       port: 3306
+  persistence:
+    enabled: true
+    size: 10Gi                # Size of the volume
+    storageClass: "gp2"       # StorageClass; adjust as necessary
+
+resources:
+  # Optional resource limits and requests
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# Autoscaling
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Volumes and Mounts
+volumes: []
+# volumeMounts: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
