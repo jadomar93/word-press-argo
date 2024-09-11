@@ -1,0 +1,10 @@
+apiVersion: v2
+name: wordpress
+description: A Helm chart for WordPress
+type: application
+version: 0.1.0   # This is the version of the chart itself, update if needed.
+appVersion: 5.9.0   # This should match the WordPress version you're deploying.
+dependencies:
+  - name: mariadb
+    version: 19.0.5   # Make sure this matches the version in values.yaml (or a compatible one)
+    repository: https://charts.bitnami.com/bitnami

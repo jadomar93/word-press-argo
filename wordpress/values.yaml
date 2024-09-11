@@ -1,0 +1,114 @@
+# Default values for WordPress Helm chart
+
+replicaCount: 1
+
+image:
+  repository: wordpress
+  pullPolicy: IfNotPresent
+  tag: "php8.3-apache"  # WordPress image tag
+
+imagePullSecrets: []  # Use if pulling from a private registry
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    acme.cert-manager.io/http01-edit-in-place: "true"
+  hosts:
+    - host: wordpress.jadomars.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+   - secretName: wordpress-tls
+     hosts:
+       - wordpress.jadomars.com
+
+resources: {}
+  # You can define resources like limits and requests here:
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+persistence:
+  enabled: true
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+
+mariadb:
+  enabled: true
+  auth:
+    rootPassword: "rootpassword"   # Change this to a secure value
+    username: "wordpress"          # WordPress DB user
+    password: "wordpresspassword"  # WordPress DB password
+    database: "wordpress"          # WordPress DB name
+  primary:
+    persistence:
+      enabled: true
+      storageClass: ""
+      accessModes:
+        - ReadWriteOnce
+      size: 8Gi
+
+env:
+  WORDPRESS_DB_NAME: "wordpress"
+  WORDPRESS_DB_USER: "wordpress"
+  WORDPRESS_DB_PASSWORD: "wordpresspassword"
+  WORDPRESS_DB_HOST: "wordpress-mariadb.wordpress.svc.cluster.local:3306"
+
+affinity: {}
+
+tolerations: []
+
+nodeSelector: {}
+
+# Configuration for external databases if not using internal MariaDB
+externalDatabase:
+  enabled: false
+  host: ""
+  user: ""
+  password: ""
+  database: ""
+  port: 3306
+
+# Extra volumes and volume mounts for custom configurations
+extraVolumes: []
+extraVolumeMounts: []

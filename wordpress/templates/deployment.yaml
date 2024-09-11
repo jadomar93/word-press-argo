@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "application.fullname" . }}
+  name: {{ include "wordpress.fullname" . }}
   labels:
-    {{- include "application.labels" . | nindent 4 }}
+    {{- include "wordpress.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "application.selectorLabels" . | nindent 6 }}
+      {{- include "wordpress.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,8 +18,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "application.labels" . | nindent 8 }}
-	{{- with .Values.podLabels }}
+        {{- include "wordpress.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
@@ -27,7 +27,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "application.serviceAccountName" . }}
+      serviceAccountName: {{ include "wordpress.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -40,34 +40,40 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+
           env:
-            - name: WORDPRESS_DB_HOST
-              value: "mysql:3306"  # Replace 'mysql' with the service name for MySQL if needed
-            - name: WORDPRESS_DB_USER
-              value: "example username"  # Hardcoded MySQL username
-            - name: WORDPRESS_DB_PASSWORD
-              value: "example password"  # Hardcoded MySQL password
             - name: WORDPRESS_DB_NAME
-              value: "wordpress"  # Hardcoded database name
+              value: {{ .Values.env.WORDPRESS_DB_NAME | quote }}
+            - name: WORDPRESS_DB_USER
+              value: {{ .Values.env.WORDPRESS_DB_USER | quote }}
+            - name: WORDPRESS_DB_PASSWORD
+              value: {{ .Values.env.WORDPRESS_DB_PASSWORD | quote }}
+            - name: WORDPRESS_DB_HOST
+              value: {{ .Values.env.WORDPRESS_DB_HOST | quote }}
 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+      
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
