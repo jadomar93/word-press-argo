@@ -43,13 +43,13 @@ spec:
 
           env:
             - name: WORDPRESS_DB_NAME
-              value: {{ .Values.env.WORDPRESS_DB_NAME | quote }}
+              value: "wordpress"
             - name: WORDPRESS_DB_USER
-              value: {{ .Values.env.WORDPRESS_DB_USER | quote }}
+              value: "wordpress"
             - name: WORDPRESS_DB_PASSWORD
-              value: {{ .Values.env.WORDPRESS_DB_PASSWORD | quote }}
+              value: "wordpresspassword"
             - name: WORDPRESS_DB_HOST
-              value: {{ .Values.env.WORDPRESS_DB_HOST | quote }}
+              value:"wordpress-mariadb.wordpress.svc.cluster.local:3306"
 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
