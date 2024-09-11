@@ -91,7 +91,7 @@ mariadb:
 env:
   WORDPRESS_DB_NAME: "wordpress"
   WORDPRESS_DB_USER: "example username"
-  WORDPRESS_DB_PASSWORD: "example spassword"
+  WORDPRESS_DB_PASSWORD: "example password"
   WORDPRESS_DB_HOST: "mysql"
 
 affinity: {}
