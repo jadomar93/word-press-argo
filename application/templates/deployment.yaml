@@ -42,7 +42,7 @@ spec:
               protocol: TCP
           env:
             - name: WORDPRESS_DB_HOST
-              value: "mysql"  # Replace 'mysql' with the service name for MySQL if needed
+              value: "mysql:3306"  # Replace 'mysql' with the service name for MySQL if needed
             - name: WORDPRESS_DB_USER
               value: "example username"  # Hardcoded MySQL username
             - name: WORDPRESS_DB_PASSWORD
